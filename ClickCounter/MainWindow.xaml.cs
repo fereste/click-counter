@@ -25,6 +25,7 @@ namespace ClickCounter
         private delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         static bool recording = false;
+        static Stopwatch stopwatch;
         static int leftButtonClicks = 0;
         static int rightButtonClicks = 0;
         static int middleButtonClicks = 0;
@@ -149,25 +150,29 @@ namespace ClickCounter
         {
             if (recording)
             {
-                staticThis.button1.Content = "Empezar";
+                stopwatch.Stop();
 
                 staticThis.textBox1.AppendText(string.Format("\r\nCuenta de clicks:\r\n" +
-                    "{0}\r\n" +
+                    "Hora: {0}\r\n" +
                     "Clicks izquierdos: {1}\r\n" +
                     "Clicks derechos: {2}\r\n" +
                     "Clicks del medio: {3}\r\n" +
                     "Ticks ruedita: {4}\r\n" +
                     "Total clicks (I+D): {5}\r\n" +
-                    "Total de teclas: {6}\r\n",
+                    "Total de teclas: {6}\r\n" +
+                    "Tiempo de grabación: {7}\r\n",
                     DateTime.Now.ToLongTimeString(),
                     leftButtonClicks,
                     rightButtonClicks,
                     middleButtonClicks,
                     wheelClicks,
                     leftButtonClicks + rightButtonClicks,
-                    keysUp));
+                    keysUp,
+                    stopwatch.Elapsed.ToString(@"mm\:ss")));
 
                 staticThis.textBox1.ScrollToEnd();
+                staticThis.button1.Content = "Empezar";
+
                 recording = false;
             }
         }
@@ -179,6 +184,7 @@ namespace ClickCounter
                 ResetCounters();
                 staticThis.button1.Content = "Parar";
                 recording = true;
+                stopwatch = Stopwatch.StartNew();
             }
         }
     }
